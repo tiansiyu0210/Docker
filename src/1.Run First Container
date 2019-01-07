@@ -1,0 +1,45 @@
+stian@ubuntu:~$ sudo docker run busybox:1.30
+Unable to find image 'busybox:1.30' locally
+1.30: Pulling from library/busybox
+57c14dd66db0: Pull complete
+Digest: sha256:7964ad52e396a6e045c39b5a44438424ac52e12e4d5a25d94895f2058cb863a0
+Status: Downloaded newer image for busybox:1.30
+
+
+
+stian@ubuntu:~$ sudo docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+busybox             1.30                3a093384ac30        6 days ago          1.2MB
+
+
+
+stian@ubuntu:~$ sudo docker run busybox:1.30 echo "don't need download again"
+don't need download again
+
+
+
+stian@ubuntu:~$ sudo docker run busybox:1.30 ls /
+bin
+dev
+etc
+home
+proc
+root
+sys
+tmp
+usr
+var
+
+
+
+stian@ubuntu:~$ sudo docker run -i -t busybox:1.30
+/ # ls
+bin   dev   etc   home  proc  root  sys   tmp   usr   var
+/ # touch a.txt
+/ # ls
+a.txt  bin    dev    etc    home   proc   root   sys    tmp    usr    var
+/ # exit
+stian@ubuntu:~$ sudo docker run -i -t busybox:1.30
+/ # ls
+bin   dev   etc   home  proc  root  sys   tmp   usr   var
+/ # exit
