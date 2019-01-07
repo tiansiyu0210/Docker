@@ -1,0 +1,249 @@
+// -d mean running in the background
+stian@ubuntu:~/Projects/Docker$ docker run -d busybox:1.30 sleep 1000
+28f1d1ab7dc5c5bb5f9afb5cd6a5930df576323707287038a7475f817bf5ab4d
+
+//verify
+stian@ubuntu:~/Projects/Docker$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+28f1d1ab7dc5        busybox:1.30        "sleep 1000"        40 seconds ago      Up 39 seconds                           eloquent_meitner
+
+
+//list all contains
+stian@ubuntu:~/Projects/Docker$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS                      PORTS               NAMES
+28f1d1ab7dc5        busybox:1.30        "sleep 1000"             About a minute ago   Up About a minute                               eloquent_meitner
+4106cca50d69        busybox:1.30        "sh"                     16 minutes ago       Exited (0) 16 minutes ago                       cocky_allen
+53ed430c9851        busybox:1.30        "sh"                     17 minutes ago       Exited (0) 16 minutes ago                       cocky_mclaren
+035060b79cfe        busybox:1.30        "ls /"                   18 minutes ago       Exited (0) 18 minutes ago                       objective_sanderson
+7c4974aa90ed        busybox:1.30        "echo 'don't need do…"   19 minutes ago       Exited (0) 19 minutes ago                       serene_bassi
+dc597f34f347        busybox:1.30        "sh"                     23 minutes ago       Exited (0) 23 minutes ago                       angry_gauss
+
+
+
+//the contains will run for 1 second then removed
+stian@ubuntu:~/Projects/Docker$ docker run --rm busybox:1.30 sleep 1
+stian@ubuntu:~/Projects/Docker$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                      PORTS               NAMES
+28f1d1ab7dc5        busybox:1.30        "sleep 1000"             3 minutes ago       Up 3 minutes                                    eloquent_meitner
+4106cca50d69        busybox:1.30        "sh"                     18 minutes ago      Exited (0) 18 minutes ago                       cocky_allen
+53ed430c9851        busybox:1.30        "sh"                     19 minutes ago      Exited (0) 18 minutes ago                       cocky_mclaren
+035060b79cfe        busybox:1.30        "ls /"                   20 minutes ago      Exited (0) 20 minutes ago                       objective_sanderson
+7c4974aa90ed        busybox:1.30        "echo 'don't need do…"   21 minutes ago      Exited (0) 21 minutes ago                       serene_bassi
+dc597f34f347        busybox:1.30        "sh"                     25 minutes ago      Exited (0) 24 minutes ago                       angry_gauss
+
+
+
+//sepcify name
+stian@ubuntu:~/Projects/Docker$ docker run --name docker_king  busybox:1.30
+stian@ubuntu:~/Projects/Docker$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                      PORTS               NAMES
+c8111926318b        busybox:1.30        "sh"                     3 seconds ago       Exited (0) 2 seconds ago                        docker_king
+28f1d1ab7dc5        busybox:1.30        "sleep 1000"             5 minutes ago       Up 5 minutes                                    eloquent_meitner
+4106cca50d69        busybox:1.30        "sh"                     20 minutes ago      Exited (0) 20 minutes ago                       cocky_allen
+53ed430c9851        busybox:1.30        "sh"                     21 minutes ago      Exited (0) 20 minutes ago                       cocky_mclaren
+035060b79cfe        busybox:1.30        "ls /"                   22 minutes ago      Exited (0) 22 minutes ago                       objective_sanderson
+7c4974aa90ed        busybox:1.30        "echo 'don't need do…"   23 minutes ago      Exited (0) 23 minutes ago                       serene_bassi
+dc597f34f347        busybox:1.30        "sh"                     26 minutes ago      Exited (0) 26 minutes ago                       angry_gauss
+
+
+// docker inspect command display the low level info about a container or image
+stian@ubuntu:~/Projects/Docker$ docker run -d busybox:1.30 sleep 1000
+49e35016de8cbff96aa9c9f860e3483d3a6917f5ab834ea0230e5f6302c1982a
+stian@ubuntu:~/Projects/Docker$ docker inspect 49e35016de8cbff96aa9c9f860e3483d3a6917f5ab834ea0230e5f6302c1982a
+[
+    {
+        "Id": "49e35016de8cbff96aa9c9f860e3483d3a6917f5ab834ea0230e5f6302c1982a",
+        "Created": "2019-01-07T04:14:30.073189774Z",
+        "Path": "sleep",
+        "Args": [
+            "1000"
+        ],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 16512,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2019-01-07T04:14:30.683882894Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:3a093384ac306cbac30b67f1585e12b30ab1a899374dabc3170b9bca246f1444",
+        "ResolvConfPath": "/var/lib/docker/containers/49e35016de8cbff96aa9c9f860e3483d3a6917f5ab834ea0230e5f6302c1982a/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/49e35016de8cbff96aa9c9f860e3483d3a6917f5ab834ea0230e5f6302c1982a/hostname",
+        "HostsPath": "/var/lib/docker/containers/49e35016de8cbff96aa9c9f860e3483d3a6917f5ab834ea0230e5f6302c1982a/hosts",
+        "LogPath": "/var/lib/docker/containers/49e35016de8cbff96aa9c9f860e3483d3a6917f5ab834ea0230e5f6302c1982a/49e35016de8cbff96aa9c9f860e3483d3a6917f5ab834ea0230e5f6302c1982a-json.log",
+        "Name": "/quirky_dirac",
+        "RestartCount": 0,
+        "Driver": "overlay2",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "docker-default",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "default",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "CapAdd": null,
+            "CapDrop": null,
+            "Dns": [],
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "shareable",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": null,
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": null,
+            "BlkioDeviceWriteBps": null,
+            "BlkioDeviceReadIOps": null,
+            "BlkioDeviceWriteIOps": null,
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DiskQuota": 0,
+            "KernelMemory": 0,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": false,
+            "PidsLimit": 0,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/asound",
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "GraphDriver": {
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/c0a16d2c6828bff351170bf21aa2e256d63e26096383dcb7072de1fcf292cbfd-init/diff:/var/lib/docker/overlay2/b6fe878bde4441e045227f4089e69d9d683f74ce45501690709d994a8cf05a6f/diff",
+                "MergedDir": "/var/lib/docker/overlay2/c0a16d2c6828bff351170bf21aa2e256d63e26096383dcb7072de1fcf292cbfd/merged",
+                "UpperDir": "/var/lib/docker/overlay2/c0a16d2c6828bff351170bf21aa2e256d63e26096383dcb7072de1fcf292cbfd/diff",
+                "WorkDir": "/var/lib/docker/overlay2/c0a16d2c6828bff351170bf21aa2e256d63e26096383dcb7072de1fcf292cbfd/work"
+            },
+            "Name": "overlay2"
+        },
+        "Mounts": [],
+        "Config": {
+            "Hostname": "49e35016de8c",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": [
+                "sleep",
+                "1000"
+            ],
+            "Image": "busybox:1.30",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": {}
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "SandboxID": "26c589cb6d2b4420078bd65043dd16eea0d69105264b9348c44bb569570a5d5a",
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "Ports": {},
+            "SandboxKey": "/var/run/docker/netns/26c589cb6d2b",
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "EndpointID": "87232bc96b10890c8b8cfbd77294c075de83f7d4b3d256461b6d3df2a766bbe4",
+            "Gateway": "172.17.0.1",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "172.17.0.3",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "MacAddress": "02:42:ac:11:00:03",
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "49a7162f05552fd1d0dcd1378cce512b0fbe19085188ec4a6485551c414fe384",
+                    "EndpointID": "87232bc96b10890c8b8cfbd77294c075de83f7d4b3d256461b6d3df2a766bbe4",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.3",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:03",
+                    "DriverOpts": null
+                }
+            }
+        }
+    }
+]
