@@ -1,0 +1,80 @@
+//download tomcat image from dockerhub and set port to 8888
+stian@ubuntu:~$ docker run -it -p 8888:8080 tomcat:8.0
+Unable to find image 'tomcat:8.0' locally
+8.0: Pulling from library/tomcat
+f189db1b88b3: Pull complete
+3d06cf2f1b5e: Pull complete
+edd0da9e3091: Pull complete
+....
+
+
+//in the browser type localhost:8888
+
+
+//check containers status
+stian@ubuntu:~$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                       PORTS               NAMES
+ab138cd1497a        tomcat:8.0          "catalina.sh run"        4 minutes ago       Exited (130) 2 minutes ago                       fervent_tesla
+49e35016de8c        busybox:1.30        "sleep 1000"             2 days ago          Exited (0) 2 days ago                            quirky_dirac
+c8111926318b        busybox:1.30        "sh"                     2 days ago          Exited (0) 2 days ago                            docker_king
+28f1d1ab7dc5        busybox:1.30        "sleep 1000"             2 days ago          Exited (0) 2 days ago                            eloquent_meitner
+4106cca50d69        busybox:1.30        "sh"                     2 days ago          Exited (0) 2 days ago                            cocky_allen
+53ed430c9851        busybox:1.30        "sh"                     2 days ago          Exited (0) 2 days ago                            cocky_mclaren
+035060b79cfe        busybox:1.30        "ls /"                   2 days ago          Exited (0) 2 days ago                            objective_sanderson
+7c4974aa90ed        busybox:1.30        "echo 'don't need do…"   2 days ago          Exited (0) 2 days ago                            serene_bassi
+dc597f34f347        busybox:1.30        "sh"                     2 days ago          Exited (0) 2 days ago                            angry_gauss
+
+
+//run tomcat again with -d option to make it run in background
+stian@ubuntu:~$ docker run -it -d -p 8888:8080 tomcat:8.0
+bcdeb70c820617a1acbf4e76fbad0b6fd4d1782c049f9a9f72457a8f2c354dd1
+
+
+
+//checking the container logs
+stian@ubuntu:~$ docker logs bcdeb70c820617a1acbf4e76fbad0b6fd4d1782c049f9a9f72457a8f2c354dd1
+Using CATALINA_BASE:   /usr/local/tomcat
+Using CATALINA_HOME:   /usr/local/tomcat
+Using CATALINA_TMPDIR: /usr/local/tomcat/temp
+Using JRE_HOME:        /docker-java-home/jre
+Using CLASSPATH:       /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar
+09-Jan-2019 21:10:20.329 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server version:        Apache Tomcat/8.0.53
+09-Jan-2019 21:10:20.330 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server built:          Jun 29 2018 14:42:45 UTC
+09-Jan-2019 21:10:20.330 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server number:         8.0.53.0
+09-Jan-2019 21:10:20.330 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Name:               Linux
+09-Jan-2019 21:10:20.330 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Version:            4.15.0-43-generic
+09-Jan-2019 21:10:20.330 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Architecture:          amd64
+09-Jan-2019 21:10:20.330 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Java Home:             /usr/lib/jvm/java-7-openjdk-amd64/jre
+09-Jan-2019 21:10:20.331 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log JVM Version:           1.7.0_181-b01
+09-Jan-2019 21:10:20.331 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log JVM Vendor:            Oracle Corporation
+09-Jan-2019 21:10:20.331 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log CATALINA_BASE:         /usr/local/tomcat
+09-Jan-2019 21:10:20.331 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log CATALINA_HOME:         /usr/local/tomcat
+09-Jan-2019 21:10:20.331 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.util.logging.config.file=/usr/local/tomcat/conf/logging.properties
+09-Jan-2019 21:10:20.331 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
+09-Jan-2019 21:10:20.331 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djdk.tls.ephemeralDHKeySize=2048
+09-Jan-2019 21:10:20.331 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.protocol.handler.pkgs=org.apache.catalina.webresources
+09-Jan-2019 21:10:20.332 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dignore.endorsed.dirs=
+09-Jan-2019 21:10:20.332 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcatalina.base=/usr/local/tomcat
+09-Jan-2019 21:10:20.332 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcatalina.home=/usr/local/tomcat
+09-Jan-2019 21:10:20.332 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.io.tmpdir=/usr/local/tomcat/temp
+09-Jan-2019 21:10:20.332 INFO [main] org.apache.catalina.core.AprLifecycleListener.lifecycleEvent Loaded APR based Apache Tomcat Native library 1.2.17 using APR version 1.5.1.
+09-Jan-2019 21:10:20.332 INFO [main] org.apache.catalina.core.AprLifecycleListener.lifecycleEvent APR capabilities: IPv6 [true], sendfile [true], accept filters [false], random [true].
+09-Jan-2019 21:10:20.335 INFO [main] org.apache.catalina.core.AprLifecycleListener.initializeSSL OpenSSL successfully initialized (OpenSSL 1.1.0f  25 May 2017)
+09-Jan-2019 21:10:20.426 INFO [main] org.apache.coyote.AbstractProtocol.init Initializing ProtocolHandler ["http-apr-8080"]
+09-Jan-2019 21:10:20.434 INFO [main] org.apache.coyote.AbstractProtocol.init Initializing ProtocolHandler ["ajp-apr-8009"]
+09-Jan-2019 21:10:20.436 INFO [main] org.apache.catalina.startup.Catalina.load Initialization processed in 515 ms
+09-Jan-2019 21:10:20.457 INFO [main] org.apache.catalina.core.StandardService.startInternal Starting service Catalina
+09-Jan-2019 21:10:20.457 INFO [main] org.apache.catalina.core.StandardEngine.startInternal Starting Servlet Engine: Apache Tomcat/8.0.53
+09-Jan-2019 21:10:20.464 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory /usr/local/tomcat/webapps/host-manager
+09-Jan-2019 21:10:20.849 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory /usr/local/tomcat/webapps/host-manager has finished in 384 ms
+09-Jan-2019 21:10:20.849 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory /usr/local/tomcat/webapps/manager
+09-Jan-2019 21:10:20.879 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory /usr/local/tomcat/webapps/manager has finished in 30 ms
+09-Jan-2019 21:10:20.879 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory /usr/local/tomcat/webapps/docs
+09-Jan-2019 21:10:20.933 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory /usr/local/tomcat/webapps/docs has finished in 54 ms
+09-Jan-2019 21:10:20.933 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory /usr/local/tomcat/webapps/examples
+09-Jan-2019 21:10:21.190 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory /usr/local/tomcat/webapps/examples has finished in 256 ms
+09-Jan-2019 21:10:21.190 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory /usr/local/tomcat/webapps/ROOT
+09-Jan-2019 21:10:21.206 INFO [localhost-startStop-1] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory /usr/local/tomcat/webapps/ROOT has finished in 16 ms
+09-Jan-2019 21:10:21.209 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["http-apr-8080"]
+09-Jan-2019 21:10:21.229 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["ajp-apr-8009"]
+09-Jan-2019 21:10:21.247 INFO [main] org.apache.catalina.startup.Catalina.start Server startup in 811 ms
