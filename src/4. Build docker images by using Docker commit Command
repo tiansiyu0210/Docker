@@ -1,0 +1,95 @@
+//download and run debian image
+stian@ubuntu:~$ docker run -it debian:buster
+
+
+//setup proxy
+root@c447768f14f0:/# cd etc/apt
+root@c447768f14f0:/etc/apt# ls
+apt.conf.d  preferences.d  sources.list  sources.list.d  trusted.gpg.d
+root@c447768f14f0:/etc/apt# echo "Acquire::http::Proxy \"http://atl1webproxlb.corp.secureworks.net:3128\";" > apt.conf
+
+
+//install git in the container
+root@c447768f14f0:/etc/apt# apt-get update && apt-get install -y git
+
+//exit
+root@c447768f14f0:/etc/apt# exit
+exit
+
+//list all containers then copy the id "c447768f14f0"
+stian@ubuntu:~$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                           PORTS               NAMES
+c447768f14f0        debian:buster       "bash"                   10 minutes ago      Exited (1) 44 seconds ago                            compassionate_babbage
+44d8d3c1dc39        debian:buster       "bash"                   31 minutes ago      Exited (0) 10 minutes ago                            stupefied_dirac
+bcdeb70c8206        tomcat:8.0          "catalina.sh run"        About an hour ago   Exited (137) About an hour ago                       laughing_tesla
+ab138cd1497a        tomcat:8.0          "catalina.sh run"        About an hour ago   Exited (130) About an hour ago                       fervent_tesla
+49e35016de8c        busybox:1.30        "sleep 1000"             2 days ago          Exited (0) 2 days ago                                quirky_dirac
+c8111926318b        busybox:1.30        "sh"                     2 days ago          Exited (0) 2 days ago                                docker_king
+28f1d1ab7dc5        busybox:1.30        "sleep 1000"             2 days ago          Exited (0) 2 days ago                                eloquent_meitner
+4106cca50d69        busybox:1.30        "sh"                     2 days ago          Exited (0) 2 days ago                                cocky_allen
+53ed430c9851        busybox:1.30        "sh"                     2 days ago          Exited (0) 2 days ago                                cocky_mclaren
+035060b79cfe        busybox:1.30        "ls /"                   2 days ago          Exited (0) 2 days ago                                objective_sanderson
+7c4974aa90ed        busybox:1.30        "echo 'don't need do…"   2 days ago          Exited (0) 2 days ago                                serene_bassi
+dc597f34f347        busybox:1.30        "sh"                     2 days ago          Exited (0) 2 days ago                                angry_gauss
+
+
+
+
+//commit the container
+stian@ubuntu:~$ docker commit c447768f14f0 tiansiyu0210/debian:0.0.1
+sha256:c32be2a98e1fe3278c7333026159f998f315c12d76d8cc339ac341c96deeac41
+
+//check image
+stian@ubuntu:~$ docker images
+REPOSITORY            TAG                 IMAGE ID            CREATED              SIZE
+tiansiyu0210/debian   0.0.1               c32be2a98e1f        About a minute ago   238MB
+busybox               1.30                3a093384ac30        8 days ago           1.2MB
+debian                buster              b0032c0f5b43        11 days ago          112MB
+tomcat                8.0                 ef6a7c98d192        3 months ago         356MB
+
+//re-run the container
+stian@ubuntu:~$ docker run -it tiansiyu0210/debian:0.0.1
+root@ce523436d9e5:/# git
+usage: git [--version] [--help] [-C <path>] [-c <name>=<value>]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           <command> [<args>]
+
+These are common Git commands used in various situations:
+
+start a working area (see also: git help tutorial)
+   clone      Clone a repository into a new directory
+   init       Create an empty Git repository or reinitialize an existing one
+
+work on the current change (see also: git help everyday)
+   add        Add file contents to the index
+   mv         Move or rename a file, a directory, or a symlink
+   reset      Reset current HEAD to the specified state
+   rm         Remove files from the working tree and from the index
+
+examine the history and state (see also: git help revisions)
+   bisect     Use binary search to find the commit that introduced a bug
+   grep       Print lines matching a pattern
+   log        Show commit logs
+   show       Show various types of objects
+   status     Show the working tree status
+
+grow, mark and tweak your common history
+   branch     List, create, or delete branches
+   checkout    Switch branches or restore working tree files
+   commit     Record changes to the repository
+   diff       Show changes between commits, commit and working tree, etc
+   merge      Join two or more development histories together
+   rebase     Reapply commits on top of another base tip
+   tag        Create, list, delete or verify a tag object signed with GPG
+
+collaborate (see also: git help workflows)
+   fetch      Download objects and refs from another repository
+   pull       Fetch from and integrate with another repository or a local branch
+   push       Update remote refs along with associated objects
+
+'git help -a' and 'git help -g' list available subcommands and some
+concept guides. See 'git help <command>' or 'git help <concept>'
+to read about a specific subcommand or concept.
+root@ce523436d9e5:/#
