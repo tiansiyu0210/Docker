@@ -78,3 +78,22 @@ Using CLASSPATH:       /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin
 09-Jan-2019 21:10:21.209 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["http-apr-8080"]
 09-Jan-2019 21:10:21.229 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["ajp-apr-8009"]
 09-Jan-2019 21:10:21.247 INFO [main] org.apache.catalina.startup.Catalina.start Server startup in 811 ms
+
+
+//kill a container
+stian@ubuntu:~$ docker kill bcdeb70c8206
+bcdeb70c8206
+
+stian@ubuntu:~$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                        PORTS               NAMES
+bcdeb70c8206        tomcat:8.0          "catalina.sh run"        20 minutes ago      Exited (137) 3 seconds ago                        laughing_tesla
+ab138cd1497a        tomcat:8.0          "catalina.sh run"        26 minutes ago      Exited (130) 24 minutes ago                       fervent_tesla
+49e35016de8c        busybox:1.30        "sleep 1000"             2 days ago          Exited (0) 2 days ago                             quirky_dirac
+c8111926318b        busybox:1.30        "sh"                     2 days ago          Exited (0) 2 days ago                             docker_king
+28f1d1ab7dc5        busybox:1.30        "sleep 1000"             2 days ago          Exited (0) 2 days ago                             eloquent_meitner
+4106cca50d69        busybox:1.30        "sh"                     2 days ago          Exited (0) 2 days ago                             cocky_allen
+53ed430c9851        busybox:1.30        "sh"                     2 days ago          Exited (0) 2 days ago                             cocky_mclaren
+035060b79cfe        busybox:1.30        "ls /"                   2 days ago          Exited (0) 2 days ago                             objective_sanderson
+7c4974aa90ed        busybox:1.30        "echo 'don't need do…"   2 days ago          Exited (0) 2 days ago                             serene_bassi
+dc597f34f347        busybox:1.30        "sh"                     2 days ago          Exited (0) 2 days ago                             angry_gauss
+
