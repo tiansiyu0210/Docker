@@ -1,3 +1,9 @@
+//create a file
+stian@ubuntu:~$ touch abc.txt
+
+//update the Dockerfile
 FROM debian:buster
 RUN cd /etc/apt && touch apt.conf && echo "Acquire::http::Proxy \"http://atl1webproxlb.corp.secureworks.net:3128\";" > apt.conf  && apt-get update  && apt-get install -y git
-COPY abc.txt /src/abc.txt
+COPY /abc.txt /src/abc.txt
+
+
