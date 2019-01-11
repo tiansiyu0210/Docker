@@ -1,0 +1,14 @@
+//must name "Dockerfile" with capitial "D"
+stian@ubuntu:~$ touch Dockerfile
+
+//see Dockerfile
+FROM debian:buster
+RUN cd /etc/apt && touch apt.conf && echo "Acquire::http::Proxy \"http://atl1webproxlb.corp.secureworks.net:3128\";" > apt.conf  && apt-get update  && apt-get install -y git
+
+
+//move dockerfile to this project
+stian@ubuntu:~$ mv Dockerfile Projects/Docker/src/
+
+
+//run dockerfile
+stian@ubuntu:~$ docker build -t tiansiyu0210/debian Projects/Docker/src
