@@ -2,7 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/src/9/Containerize_a_Simple_Hello_World_Web_Application/dockerapp" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/src/9/dockerapp" vcs="Git" />
   </component>
 </project>

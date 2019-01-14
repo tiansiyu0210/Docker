@@ -1,0 +1,12 @@
+//download the python3.5 image, and run the docker file to build new image as "dockerapp" with tag v0.1
+docker build -t dockerapp:v0.1 .
+
+//run the container, and -p to map the port from container to host
+docker run -d -p 5000:5000 [image id]
+
+
+
+//go the browser localhost:5000
+
+//running a command in the running container (run docker ps -a first to copy the container id)
+docker exec -it [container id] bash
