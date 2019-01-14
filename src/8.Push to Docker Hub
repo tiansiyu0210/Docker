@@ -1,0 +1,3 @@
+docker tag b29091b9447b tiansiyu0210/debian:1.1.1
+docker login --username=xxxxxx
+docker push tiansiyu0210/debian:1.1.1
