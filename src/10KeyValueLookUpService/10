@@ -1,0 +1,98 @@
+//run the dockerfile by setting the proxy value
+docker build --build-arg HTTP_PROXY=http://atl1webproxlb.corp.secureworks.net:3128 --build-arg HTTPS_PROXY=http://atl1webproxlb.corp.secureworks.net:3128 -t dockerapp:v0.2 .
+
+
+//run the container
+stian@ubuntu:~/Projects/Docker/src/10KeyValueLookUpService$ docker run -d -p 5000:5000 dockerapp:v0.2
+338af0dd9a49de1ba66a1a8cc78d8519d7557c8f90f47d0e013610e38c97ccb1
+
+//go to browser http://localhost:5000/
+
+
+//run redis
+stian@ubuntu:~/Projects/Docker/src/10KeyValueLookUpService$ docker run -d --name redis redis:3.2.0
+Unable to find image 'redis:3.2.0' locally
+3.2.0: Pulling from library/redis
+51f5c6a04d83: Pull complete
+6c8ccd839b1d: Pull complete
+0fded1c9651d: Pull complete
+7f1aa6a73799: Pull complete
+658be2e58dbd: Pull complete
+3d3b67be53f9: Pull complete
+8a88e1919daf: Pull complete
+Digest: sha256:4b24131101fa0117bcaa18ac37055fffd9176aa1a240392bb8ea85e0be50f2ce
+Status: Downloaded newer image for redis:3.2.0
+8bf1b76e7d7f3b9fc90e9d5f7e5bc0f224df356f7734f6b4519a134304aaa5d0
+
+//now python and redis both running
+stian@ubuntu:~/Projects/Docker/src/10KeyValueLookUpService$ docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+8bf1b76e7d7f        redis:3.2.0         "docker-entrypoint.s…"   About an hour ago   Up About an hour    6379/tcp                 redis
+338af0dd9a49        dockerapp:v0.2      "python app.py"          About an hour ago   Up About an hour    0.0.0.0:5000->5000/tcp   dazzling_swirles
+
+//kill the python, cause we are going to re build a new one with docker link
+stian@ubuntu:~/Projects/Docker/src/10KeyValueLookUpService$ docker kill 338af0dd9a49
+338af0dd9a49
+
+//run build the image with update dockerfile which contains redis
+ docker build --build-arg HTTP_PROXY=http://atl1webproxlb.corp.secureworks.net:3128 --build-arg HTTPS_PROXY=http://atl1webproxlb.corp.secureworks.net:3128 -t dockerapp:v0.3 .
+
+//run the v0.3 version with --link option point to container which name is redis
+stian@ubuntu:~/Projects/Docker/src/10KeyValueLookUpService$ docker run -d -p 5000:5000 --link redis dockerapp:v0.3
+f4149f77247949933b2cb3cccce00135afe90e9824be58535ea976ae2386cbc3
+
+//docker ps
+stian@ubuntu:~/Projects/Docker/src/10KeyValueLookUpService$ docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+f4149f772479        dockerapp:v0.3      "python app.py"          53 seconds ago      Up 51 seconds       0.0.0.0:5000->5000/tcp   mystifying_rubin
+8bf1b76e7d7f        redis:3.2.0         "docker-entrypoint.s…"   About an hour ago   Up About an hour    6379/tcp                 redis
+
+
+
+//go to browser http://localhost:5000/    again
+
+//check how docker link works
+stian@ubuntu:~/Projects/Docker/src/10KeyValueLookUpService$ docker exec -it f4149f772479 bash
+admin@f4149f772479:/app$ more /etc/hosts
+127.0.0.1	localhost
+::1	localhost ip6-localhost ip6-loopback
+fe00::0	ip6-localnet
+ff00::0	ip6-mcastprefix
+ff02::1	ip6-allnodes
+ff02::2	ip6-allrouters
+172.17.0.3	redis 8bf1b76e7d7f
+172.17.0.2	f4149f772479
+admin@f4149f772479:/app$
+
+
+//check the redis container
+stian@ubuntu:~/Projects/Docker/src/10KeyValueLookUpService$ docker inspect 8bf1b76e7d7f | grep IP
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "172.17.0.3",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+                    "IPAMConfig": null,
+                    "IPAddress": "172.17.0.3",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+
+//go to python container again, and pin redis
+stian@ubuntu:~/Projects/Docker/src/10KeyValueLookUpService$ docker exec -it f4149f772479 bash
+admin@f4149f772479:/app$ ping redis
+PING redis (172.17.0.3) 56(84) bytes of data.
+64 bytes from redis (172.17.0.3): icmp_seq=1 ttl=64 time=0.206 ms
+64 bytes from redis (172.17.0.3): icmp_seq=2 ttl=64 time=0.115 ms
+64 bytes from redis (172.17.0.3): icmp_seq=3 ttl=64 time=0.152 ms
+64 bytes from redis (172.17.0.3): icmp_seq=4 ttl=64 time=0.150 ms
+64 bytes from redis (172.17.0.3): icmp_seq=5 ttl=64 time=0.090 ms
+64 bytes from redis (172.17.0.3): icmp_seq=6 ttl=64 time=0.168 ms
+
+
+
