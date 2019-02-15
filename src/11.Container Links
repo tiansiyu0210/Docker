@@ -1,0 +1,16 @@
+Container Links is use to a container talk to another container
+
+
+example:
+docker run -d -p 5000:5000 --link sourceContainer recipientContainer:v0.1
+//recipientContainer can be http(api) container
+//sourceContainer can be database container
+
+docker exec -it [recipientContainer hash] bash
+more /etc/hosts
+//then we will see the sourceContainer name and ip
+ping [sourceContainer]
+
+
+docker inspect [sourceContainer hash] | grep ip
+// we will see the ip is as same as the one in recipientContainer /etc/hosts
