@@ -17,4 +17,17 @@ docker-machine ssh swarm-node
 //leave the swarm
 docker swarm leave
 
+//connect to node
+docker-machine ssh swarm-manager
+exit// to exit node
+
+//send command for swarm node
+docker-machine ssh swarm-manager "docker swarm init"
+
+
+//copy compose file to manager node
+docker-machine scp docker-compose.yml swarm-manager:~
+
+//deploy
+docker-machine ssh swarm-manager "docker stack deploy -c docker-compose.yml getstartedlab"
 
