@@ -18,3 +18,12 @@ docker-compose rm
 
 //build the image
 docker-compose build
+
+
+//define network in docker-compose
+networks:
+    my_net:
+        driver: bridge
+
+
+

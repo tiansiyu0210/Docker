@@ -1,0 +1,12 @@
+docker-machine ls
+
+//different cloud provider have differnet sytanx
+docker-machine create --driver digitocean --difitalocean-access-token [token]  [some_name](docker-app-machine)
+
+
+//
+docker-machine env docker-app-machine
+
+
+//
+docker-compose -f [docker_compose_file_name].yml up -d

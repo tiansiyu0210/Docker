@@ -1,0 +1,7 @@
+- supports multi-host networking out-of-the-box.
+- Required some pre-exi sting conditions before it can be created.
+        1. running docker engine in Swarm mode.
+        2. A key-value store such as consul.
+
+
+https://docs.docker.com/network/overlay-standalone.swarm/

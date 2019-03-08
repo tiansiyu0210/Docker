@@ -1,0 +1,5 @@
+- Unit tests should test some basic functionality of our docker app code, with no reliance external services.
+- Unit tests should run as quickly as possible so that developer can iterate much faster without being blocked by waiting for tests results.
+- Docker containers can spin up in seconds and can create a clean and isolated environment which is great tool to run unit tests with.
+
+using unittest

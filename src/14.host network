@@ -1,0 +1,49 @@
+-the least protected network model, it adds a container on the host's network stack.
+-Container deployed on the host stack have full access to the host's interface.
+-This kind of containers are usually called open containers.
+
+
+//using host network
+stian@ubuntu:~$ docker run -d --name container_04 --net host busybox sleep 1000
+868bb89f2aa9dc4adef9e90458738b5793f6f5e68e23d7d57b4ad9f515c886f1
+
+
+//inspect
+stian@ubuntu:~$ docker exec -it container_04 ifconfig
+br-98fcc7dfc6b4 Link encap:Ethernet  HWaddr 02:42:5B:2B:80:79
+          inet addr:172.18.0.1  Bcast:172.18.255.255  Mask:255.255.0.0
+          inet6 addr: fe80::42:5bff:fe2b:8079/64 Scope:Link
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:43 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:0 (0.0 B)  TX bytes:5123 (5.0 KiB)
+
+docker0   Link encap:Ethernet  HWaddr 02:42:63:D3:FB:9D
+          inet addr:172.17.0.1  Bcast:172.17.255.255  Mask:255.255.0.0
+          inet6 addr: fe80::42:63ff:fed3:fb9d/64 Scope:Link
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+          RX packets:36 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:46 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:2856 (2.7 KiB)  TX bytes:5317 (5.1 KiB)
+
+ens33     Link encap:Ethernet  HWaddr 00:0C:29:3C:AE:D3
+          inet addr:192.168.146.143  Bcast:192.168.146.255  Mask:255.255.255.0
+          inet6 addr: fe80::5f7:9df:a422:4e89/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:750037 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:517109 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:755289258 (720.2 MiB)  TX bytes:49686493 (47.3 MiB)
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:5762251 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:5762251 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:1444374394 (1.3 GiB)  TX bytes:1444374394 (1.3 GiB)
+
+

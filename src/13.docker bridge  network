@@ -1,0 +1,243 @@
+stian@ubuntu:~$ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+e8ff4a86d036        bridge              bridge              local
+8664aa5fdb6f        host                host                local
+eed18f0dfc70        none                null                local
+
+
+stian@ubuntu:~$ docker network inspect bridge
+[
+    {
+        "Name": "bridge",
+        "Id": "e8ff4a86d036bbcde5c57da6b32cdfc15867ce0c54ddf89c71a73bc805a7bd46",
+        "Created": "2019-02-13T10:25:52.514183489-05:00",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16",
+                    "Gateway": "172.17.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {},
+        "Options": {
+            "com.docker.network.bridge.default_bridge": "true",
+            "com.docker.network.bridge.enable_icc": "true",
+            "com.docker.network.bridge.enable_ip_masquerade": "true",
+            "com.docker.network.bridge.host_binding_ipv4": "0.0.0.0",
+            "com.docker.network.bridge.name": "docker0",
+            "com.docker.network.driver.mtu": "1500"
+        },
+        "Labels": {}
+    }
+]
+
+
+stian@ubuntu:~$ docker run -d --name container_1 busybox sleep 1000
+Unable to find image 'busybox:latest' locally
+latest: Pulling from library/busybox
+697743189b6d: Pull complete
+Digest: sha256:061ca9704a714ee3e8b80523ec720c64f6209ad3f97c0ff7cb9ec7d19f15149f
+Status: Downloaded newer image for busybox:latest
+0e1211e042bb4b1b555a68df9e95ed70c46b0908bdd3b8f005d214efd041e74f
+
+
+
+
+stian@ubuntu:~$ docker exec -it container_1 ifconfig
+eth0      Link encap:Ethernet  HWaddr 02:42:AC:11:00:02                =======================> this is the bridge network, the ip range is from 172.17.0.0-172.17.255.255
+          inet addr:172.17.0.2  Bcast:172.17.255.255  Mask:255.255.0.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:62 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:7596 (7.4 KiB)  TX bytes:0 (0.0 B)
+
+lo        Link encap:Local Loopback                      ===================>> this is internal use
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+
+//run another container
+stian@ubuntu:~$ docker run -d --name container_2 busybox sleep 1000
+9daa2860a49b7304ca47d8669d0e781c85bfb12d3bf50fb020dc18e7516ba9d0
+
+
+//inspect the network for the container_2
+stian@ubuntu:~$ docker exec -it container_2 ifconfig
+eth0      Link encap:Ethernet  HWaddr 02:42:AC:11:00:03
+          inet addr:172.17.0.3  Bcast:172.17.255.255  Mask:255.255.0.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:23 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:2804 (2.7 KiB)  TX bytes:0 (0.0 B)
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+
+//container_1 ping container 2
+stian@ubuntu:~$ docker exec -it container_1 ping 172.17.0.3
+PING 172.17.0.3 (172.17.0.3): 56 data bytes
+64 bytes from 172.17.0.3: seq=0 ttl=64 time=0.229 ms
+64 bytes from 172.17.0.3: seq=1 ttl=64 time=0.119 ms
+64 bytes from 172.17.0.3: seq=2 ttl=64 time=0.123 ms
+64 bytes from 172.17.0.3: seq=3 ttl=64 time=0.174 ms
+64 bytes from 172.17.0.3: seq=4 ttl=64 time=0.109 ms
+64 bytes from 172.17.0.3: seq=5 ttl=64 time=0.107 ms
+64 bytes from 172.17.0.3: seq=6 ttl=64 time=0.147 ms
+64 bytes from 172.17.0.3: seq=7 ttl=64 time=0.181 ms
+64 bytes from 172.17.0.3: seq=8 ttl=64 time=0.085 ms
+^C
+--- 172.17.0.3 ping statistics ---
+9 packets transmitted, 9 packets received, 0% packet loss
+round-trip min/avg/max = 0.085/0.141/0.229 ms
+
+
+
+//container_1 ping outside
+stian@ubuntu:~$ docker exec -it container_1 ping 8.8.8.8
+
+
+
+//create a bridge network
+stian@ubuntu:~$ docker network create --driver bridge my_bridge_network
+98fcc7dfc6b41dc06547ef40539cacdab6cb12f060a60c6cb90cbc517f4f3d99
+
+
+stian@ubuntu:~$ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+e8ff4a86d036        bridge              bridge              local
+8664aa5fdb6f        host                host                local
+98fcc7dfc6b4        my_bridge_network   bridge              local
+eed18f0dfc70        none                null                local
+
+
+//inspect my new network
+stian@ubuntu:~$ docker network inspect my_bridge_network
+[
+    {
+        "Name": "my_bridge_network",
+        "Id": "98fcc7dfc6b41dc06547ef40539cacdab6cb12f060a60c6cb90cbc517f4f3d99",
+        "Created": "2019-02-27T14:42:13.390710112-05:00",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.18.0.0/16",  ============> ip range from 172.18.0.0--172.18.255.255
+                    "Gateway": "172.18.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {},
+        "Options": {},
+        "Labels": {}
+    }
+]
+
+
+//run a new container with new bridge network
+stian@ubuntu:~$ docker run -d --name container_3 --net my_bridge_network busybox sleep 1000
+796525d5bfe5e7dad1cb1898ee28f523095a0df10b06c0d5216a986f40937dbc
+
+
+
+stian@ubuntu:~$ docker exec -it container_3 ifconfig
+eth0      Link encap:Ethernet  HWaddr 02:42:AC:12:00:02
+          inet addr:172.18.0.2  Bcast:172.18.255.255  Mask:255.255.0.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:54 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:6888 (6.7 KiB)  TX bytes:0 (0.0 B)
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+//so right now we can NOT ping container_1 to container_3, since there are in different network bridge
+
+//add container_3 into the old bridge network
+stian@ubuntu:~$ docker network connect bridge container_3
+
+//now container_1 can call container_3
+stian@ubuntu:~$ docker exec -it container_3 ifconfig
+eth0      Link encap:Ethernet  HWaddr 02:42:AC:12:00:02
+          inet addr:172.18.0.2  Bcast:172.18.255.255  Mask:255.255.0.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:67 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:8037 (7.8 KiB)  TX bytes:0 (0.0 B)
+
+eth1      Link encap:Ethernet  HWaddr 02:42:AC:11:00:02
+          inet addr:172.17.0.2  Bcast:172.17.255.255  Mask:255.255.0.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:25 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:2981 (2.9 KiB)  TX bytes:0 (0.0 B)
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+//ping 3 to 1
+stian@ubuntu:~$ docker exec -it container_3 ping 172.17.0.2
+PING 172.17.0.2 (172.17.0.2): 56 data bytes
+64 bytes from 172.17.0.2: seq=0 ttl=64 time=0.056 ms
+64 bytes from 172.17.0.2: seq=1 ttl=64 time=0.115 ms
+64 bytes from 172.17.0.2: seq=2 ttl=64 time=0.156 ms
+64 bytes from 172.17.0.2: seq=3 ttl=64 time=0.139 ms
+^C
+--- 172.17.0.2 ping statistics ---
+4 packets transmitted, 4 packets received, 0% packet loss
+round-trip min/avg/max = 0.056/0.116/0.156 ms
+
+
+
+//disconnect bridge network from container_3
+docker network disconnect bridge container_3
+
+

@@ -1,0 +1,26 @@
+//deploy key can added in docker compose
+
+version: "3.0"
+services:
+    dockerapp:
+        images:
+        ports:
+            -8080:8080
+        depends_on:
+            - redis
+        deploy:
+            replicas: 3 // docker will run 3 instances
+            resources:
+                limits:
+                    cpus: '0.1'   //10% cpu
+                    memory: 50M
+            restart_policy:
+                condition: on-failure
+
+
+docker stack deploy --compose-file [fileName].yml deockerapp_stack
+
+
+docker stack ls
+docker stack services dockerapp_stack
+docker stack rm
